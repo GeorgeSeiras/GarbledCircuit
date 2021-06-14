@@ -28,5 +28,5 @@ class Alice:
                     keys.append(gate['keys'][2])
                 else:
                     keys.append(gate['keys'][3])
-            inputGateKeys.append({'id':gate['id'],'keys':keys})
+                inputGateKeys.append({'id':gate['id'],'keys':keys})
         return inputGateKeys
