@@ -1,0 +1,54 @@
+{
+    "gates": [
+        {
+            "id": 2,
+            "type": "input",
+            "input": [
+                0,
+                0
+            ]
+        },
+        {
+            "id": 3,
+            "type": "input",
+            "input": [
+                0,
+                1
+            ]
+        },
+        {
+            "id": 4,
+            "type": "outer",
+            "input": [
+                1,
+                2
+            ]
+        },
+        {
+            "id": 5,
+            "type": "outer",
+            "input": [
+                3,
+                3
+            ]
+        },
+        {
+            "id": 6,
+            "type": "outer",
+            "input": [
+                4,
+                4
+            ]
+        }
+    ],
+    "inputs": [
+        0,
+        1
+    ],
+    "outputs": [
+        3,
+        4,
+        5,
+        6
+    ]
+}
