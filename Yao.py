@@ -6,15 +6,19 @@ class GarbleGate:
     def __init__(self):
         self.keys = [],
         self.cyphertext = []
-        self.outputs = []
+        self.outputs = [],
+        self.wires = []
 
+    
     def run(self, garbledCircuit, circuitInputs, gate):
         self.garble(gate, circuitInputs, garbledCircuit)
         return {
             'id': gate['id'],
             'keys': self.keys,
             'cyphertext': self.cyphertext,
-            'outputs': self.outputs
+            'outputs': self.outputs,
+            'type':gate['type'],
+            'inputs':gate['input']
         }
 
     def generateKey(self):
@@ -34,25 +38,34 @@ class GarbleGate:
     # Generates or finds the appropriates keys for the gate input
     def generateInputKeys(self, gate, circuit_inputs, garbled_circuit):
         keys = []
-        # if the gate input wires are input wires, generate 4 keys
-        if(gate['type'] == "input"):
-            keys.append(self.generateKey())  # keyX_0
-            keys.append(self.generateKey())  # keyX_1
-            keys.append(self.generateKey())  # keyY_0
-            keys.append(self.generateKey())  # keyY_1
-        elif(gate['type'] == "outer"):
-            if(gate['input'][0] in circuit_inputs):
-                keys.append(self.generateKey())  # keyX_0
-                keys.append(self.generateKey())  # keyX_1
-            else:
+        wire1Found = False
+        wire2Found = False
+        #if the either wire already has a set of keys find them
+        for wire in self.wires:
+            if(gate['input'][0] in wire['keys']):
+                keys = keys + wire['keys']
+                wire1Found = True
+            if(gate['input'][1] in wire['keys']):
+                keys = keys + wire['keys']
+                wire2Found = True
+        #if wire1 does not already have its keys generated
+        if(not wire1Found):
+            #if the gate's wires are both input wires, generate the keys
+            if(gate['type'] == 'input'):
+                keys.append(self.generateKey())
+                keys.append(self.generateKey())
+            #if the wiresis an output from another gate, find it
+            elif(gate['type'] == "outer"):
                 res = self.getKeyFromGateOutput(garbled_circuit, gate['input'][0])
                 if(res == None):
                     return None
                 keys = keys + res
-            if(gate['input'][1] in circuit_inputs):
-                keys.append(self.generateKey())  # keyY_0
-                keys.append(self.generateKey())  # keyY_1
-            else:
+        #do the same for the second wire
+        if(not wire2Found):
+            if(gate['type'] == 'input'):
+                keys.append(self.generateKey())
+                keys.append(self.generateKey())
+            elif(gate['type'] == "outer"):
                 res = self.getKeyFromGateOutput(garbled_circuit, gate['input'][1])
                 if(res == None):
                     return None

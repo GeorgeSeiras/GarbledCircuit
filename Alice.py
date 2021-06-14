@@ -14,3 +14,19 @@ class Alice:
 
     def generateInputs(self):
         return [random.randint(0,1), random.randint(0,1)]
+
+    def getInputGateKeys(self,circuit,inputs):
+        inputGateKeys = []
+        for gate in circuit:
+            keys = []
+            if(gate['type'] == 'input'):
+                if(inputs[0] == 0):
+                    keys.append(gate['keys'][0])
+                else:
+                    keys.append(gate['keys'][1])
+                if(inputs[1] == 0):
+                    keys.append(gate['keys'][2])
+                else:
+                    keys.append(gate['keys'][3])
+            inputGateKeys.append({'id':gate['id'],'keys':keys})
+        return inputGateKeys
