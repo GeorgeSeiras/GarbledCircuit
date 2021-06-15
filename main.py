@@ -25,5 +25,5 @@ inputs = alice.generateInputs()
 keys = alice.getInputGateKeys(garbled_circuit,circuit['inputs'],inputs)
 bob.getInputs(keys)
 
-decoded_circuit = bob.decodeCircuit()
+decoded_circuit = bob.decodeCircuit(circuit['outputs'])
 print(decoded_circuit)

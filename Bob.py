@@ -11,7 +11,8 @@ class Bob:
         self.circuit = circuit
 
     #decodes the circuit gate by gate, logging the output of every gate it decodes
-    def decodeCircuit(self):
+    #returns only the outputs of the gates that are marked as outputs of the circuit
+    def decodeCircuit(self,outputs):
         self.decoded_circuit = []
         for gate in self.circuit:
             found = self.decodeGate(gate)
@@ -19,7 +20,11 @@ class Bob:
                 self.decoded_circuit.append({'id':gate['id'],'output':gate['outputs'][0]})
             elif(found == b'1'):
                 self.decoded_circuit.append({'id':gate['id'],'output':gate['outputs'][1]})
-        return self.decoded_circuit
+        decodedOutputs = {}
+        for gate in self.decoded_circuit:
+            if(gate['id'] in outputs):
+                decodedOutputs.update({gate['id']:gate['output']})
+        return decodedOutputs
 
     def decodeGate(self, gate):
         keys = []
