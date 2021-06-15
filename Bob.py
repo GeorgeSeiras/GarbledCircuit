@@ -1,11 +1,16 @@
 from cryptography.fernet import Fernet
 class Bob:
+
+    def __init__(self):
+        self.output = {}
+
     def getInputs(self, keys):
         self.keys = keys
         
     def getGarbledCircuit(self, circuit):
         self.circuit = circuit
 
+    #decodes the circuit gate by gate, logging the output of every gate it decodes
     def decodeCircuit(self):
         self.decoded_circuit = []
         for gate in self.circuit:
@@ -17,32 +22,31 @@ class Bob:
         return self.decoded_circuit
 
     def decodeGate(self, gate):
-        # print(self.keys)
-        #if the gate's wires are both input wires search for the appropriate keys and decode them
-        # if(gate['type'] == 'input'):
-        #     keys = []
-        #     for key in gate['keys']:
-        #         print(key)
-        #     print('+')
-        #     print(gate['inputs'])
-        #     print(self.keys.get(gate['inputs'][0]))
-        #     print(self.keys.get(gate['inputs'][1]))
-        #     keys.append(self.keys.get(gate['inputs'][0]))
-        #     keys.append(self.keys.get(gate['inputs'][1]))
-        #     print('---------------------------------------------------')
-        #     return self.decodeCyphertext(gate,keys)
-        # #if not check if one of the 2 wires is an input wire
-        # keys = []
-        # for entry in self.keys:
-        #     found = entry.get(gate['inputs'][0])
-        #     # print(found)
-        #     if(gate['inputs'][0] == entry['id']):
-        #         # print(entry['outputs'])
-                 pass      
-        
+        keys = []
+        #if the wire is an input wire find its corresponding key
+        foundKey1 = self.keys.get(gate['inputs'][0])
+        if(foundKey1 is not None):
+            keys.append(foundKey1)
+        #else find the output key of the corresponding gate
+        else:
+            keys.append(self.output.get(gate['inputs'][0]))
+        foundKey2 = self.keys.get(gate['inputs'][1])
+        if(foundKey2 is not None):
+            keys.append(foundKey2)
+        else:
+            keys.append(self.output.get(gate['inputs'][1]))
+        return self.decodeCyphertext(gate,keys)
+
+    #decodes the appropriate cyphertext of the gate and logs the output of the gate in self.output
     def decodeCyphertext(self,gate,keys):
         for cyphertext in gate['cyphertext']:
             try:
-                return Fernet(keys[0]).decrypt(Fernet(keys[1]).decrypt(cyphertext))
+                res = Fernet(keys[0]).decrypt(Fernet(keys[1]).decrypt(cyphertext))
+                if(res == b'0'):
+                    self.output.update({gate['id']:gate['outputs'][0]})
+                    return res
+                elif(res == b'1'):
+                    self.output.update({gate['id']:gate['outputs'][1]})
+                    return res
             except:
                 pass

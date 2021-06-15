@@ -2,6 +2,7 @@ from Yao import GarbleGate
 import random
 class Alice:
 
+    #given a circuit, creates and returnes its garbled version
     def garbleCirtcuit(self,circuit):
         garbled_circuit = []
         yao = GarbleGate()
@@ -10,7 +11,6 @@ class Alice:
             if(garbled_gate == None):
                 return None
             garbled_circuit.append(garbled_gate)
-        wires = yao.getWires()
         return garbled_circuit
 
     def generateInputs(self):
@@ -23,7 +23,6 @@ class Alice:
             for gate in circuit:
                 if wire in gate['inputs']:
                     index = gate['inputs'].index(wire)
-                    # print(index, gate['keys'])
                     if(index == 0):
                         if(inputs[index] == 0):
                           inputWireKeys.update({wire:gate['keys'][0]})
