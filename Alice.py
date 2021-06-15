@@ -6,27 +6,32 @@ class Alice:
         garbled_circuit = []
         yao = GarbleGate()
         for gate in circuit['gates']:
-            garbled_gate = yao.run(garbled_circuit, circuit['inputs'], gate)
+            garbled_gate = yao.run(garbled_circuit, gate)
             if(garbled_gate == None):
                 return None
             garbled_circuit.append(garbled_gate)
+        wires = yao.getWires()
         return garbled_circuit
 
     def generateInputs(self):
         return [random.randint(0,1), random.randint(0,1)]
 
-    def getInputGateKeys(self,circuit,inputs):
-        inputGateKeys = []
-        for gate in circuit:
-            keys = []
-            if(gate['type'] == 'input'):
-                if(inputs[0] == 0):
-                    keys.append(gate['keys'][0])
-                else:
-                    keys.append(gate['keys'][1])
-                if(inputs[1] == 0):
-                    keys.append(gate['keys'][2])
-                else:
-                    keys.append(gate['keys'][3])
-                inputGateKeys.append({'id':gate['id'],'keys':keys})
-        return inputGateKeys
+    #create a dictionary with the key that corresponds to each input wire of the circuit
+    def getInputGateKeys(self,circuit,inputWires,inputs):
+        inputWireKeys = {}
+        for wire in inputWires:
+            for gate in circuit:
+                if wire in gate['inputs']:
+                    index = gate['inputs'].index(wire)
+                    # print(index, gate['keys'])
+                    if(index == 0):
+                        if(inputs[index] == 0):
+                          inputWireKeys.update({wire:gate['keys'][0]})
+                        elif(inputs[index] == 1):
+                         inputWireKeys.update({wire:gate['keys'][1]})
+                    elif(index == 1):
+                        if(inputs[index] == 0):
+                          inputWireKeys.update({wire:gate['keys'][2]})
+                        elif(inputs[index] == 1):
+                         inputWireKeys.update({wire:gate['keys'][3]})
+        return inputWireKeys

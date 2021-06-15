@@ -17,18 +17,29 @@ class Bob:
         return self.decoded_circuit
 
     def decodeGate(self, gate):
+        # print(self.keys)
         #if the gate's wires are both input wires search for the appropriate keys and decode them
-        if(gate['type'] == 'input'):
-            for entry in self.keys:
-                if(gate['id'] == entry['id']):
-                    return self.decodeCyphertext(gate,entry['keys'])
-        #if not check if one of the 2 wires is an input wire
+        # if(gate['type'] == 'input'):
+        #     keys = []
+        #     for key in gate['keys']:
+        #         print(key)
+        #     print('+')
+        #     print(gate['inputs'])
+        #     print(self.keys.get(gate['inputs'][0]))
+        #     print(self.keys.get(gate['inputs'][1]))
+        #     keys.append(self.keys.get(gate['inputs'][0]))
+        #     keys.append(self.keys.get(gate['inputs'][1]))
+        #     print('---------------------------------------------------')
+        #     return self.decodeCyphertext(gate,keys)
+        # #if not check if one of the 2 wires is an input wire
         # keys = []
         # for entry in self.keys:
-        #     if(gate['input'][0] == entry['id']):
-        #         keys[0] = entry[]
-            
-                    
+        #     found = entry.get(gate['inputs'][0])
+        #     # print(found)
+        #     if(gate['inputs'][0] == entry['id']):
+        #         # print(entry['outputs'])
+                 pass      
+        
     def decodeCyphertext(self,gate,keys):
         for cyphertext in gate['cyphertext']:
             try:
