@@ -25,7 +25,7 @@ bob.getGarbledCircuit(garbled_circuit)
 
 #Generate inputs for the circuit
 inputs = alice.generateInputs()
-print(inputs)
+print('Inputs: ',inputs)
 #send Bob the keys for the gates with input wires as both of their wires
 keys = alice.getInputGateKeys(garbled_circuit,circuit['inputs'],inputs)
 bob.getInputs(keys)
@@ -35,4 +35,4 @@ decoded_circuit = bob.decodeCircuit(circuit['outputs'])
 
 #send circuit outputs to alice
 result = alice.decodeOutput(decoded_circuit)
-print(result)
+print('Outputs: ',result)

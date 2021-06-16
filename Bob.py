@@ -46,10 +46,11 @@ class Bob:
 
     #decodes the appropriate cyphertext of the gate and logs the output of the gate in self.output
     def decodeCyphertext(self,gate,keys):
+        i=0
         for cyphertext in gate['cyphertext']:
             try:
                 res = Fernet(keys[0]).decrypt(Fernet(keys[1]).decrypt(cyphertext))
-                self.decodedOutput.update({gate['id']:res})                    
+                self.decodedOutput.update({gate['id']:res})
                 if(res == b'0'):
                     self.output.update({gate['id']:gate['outputs'][0]})
                     return res
@@ -57,4 +58,5 @@ class Bob:
                     self.output.update({gate['id']:gate['outputs'][1]})
                     return res
             except:
+                i+=1
                 pass

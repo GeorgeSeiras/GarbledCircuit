@@ -19,7 +19,6 @@ class Alice:
         yao = GarbleGate()
         for gate in circuit['gates']:
             garbled_gate = yao.run(garbled_circuit, gate)
-            print(len(garbled_gate['keys']))
             if(garbled_gate == None):
                 return None
             garbled_circuit.append(garbled_gate)
@@ -36,19 +35,15 @@ class Alice:
                 if wire in gate['inputs']:
                     index = gate['inputs'].index(wire)
                     if(index == 0):
-                        if(inputs[index] == 0):
-                            # print('Selecting key 0')
+                        if(inputs[wire] == 0):
                             inputWireKeys.update({wire:gate['keys'][0]})
-                        elif(inputs[index] == 1):
-                            # print('Selecting key 1')
+                        elif(inputs[wire] == 1):
                             inputWireKeys.update({wire:gate['keys'][1]})
                     elif(index == 1):
-                        if(inputs[index] == 0):
-                            # print('Selecting key 3')
+                        if(inputs[wire] == 0):
                             inputWireKeys.update({wire:gate['keys'][2]})
-                        elif(inputs[index] == 1):
-                            # print('Selecting key 3')
+                        elif(inputs[wire] == 1):
                             inputWireKeys.update({wire:gate['keys'][3]})
-                    # print(gate['keys'])
+                    break
         return inputWireKeys
 
