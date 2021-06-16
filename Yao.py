@@ -61,20 +61,21 @@ class GarbleGate:
             wireKeys = self.wires.get(gate['input'][1])
             keys = keys + wireKeys
             wire2Found = True
-        if(gate['input'][0] != gate['input'][1]):
-            if(not wire2Found):
-                #if the wires is an output from another gate, find their corresponding keys
-                res = self.getKeyFromGateOutput(garbled_circuit, gate['input'][1])
-                #if they are not generate 2 keys
-                if(res == None):
-                    keys.append(self.generateKey())
-                    keys.append(self.generateKey())
-                else:
-                    keys = keys + res
-                self.wires.update({gate['input'][1]:[keys[2],keys[3]]})                    
-        else:
-            keys.append(keys[0])
-            keys.append(keys[1])
+        # if(gate['input'][0] != gate['input'][1]):
+        if(not wire2Found):
+            #if the wires is an output from another gate, find their corresponding keys
+            res = self.getKeyFromGateOutput(garbled_circuit, gate['input'][1])
+            #if they are not generate 2 keys
+            if(res == None):
+                keys.append(self.generateKey())
+                keys.append(self.generateKey())
+            else:
+                keys = keys + res
+            self.wires.update({gate['input'][1]:[keys[2],keys[3]]})   
+        #if the gates have 1 wire acting as 2 inputs, the first 2 keys are the same as the last 2                 
+        # else:
+        #     keys.append(keys[0])
+        #     keys.append(keys[1])
         self.keys = keys
 
     #Generates two keys that mark the output of a gate

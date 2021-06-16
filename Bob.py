@@ -1,9 +1,10 @@
 from cryptography.fernet import Fernet
 class Bob:
 
-    def __init__(self):
+    def __init__(self,publicKey):
+        self.fernet = Fernet(publicKey)
         self.output = {}
-
+        self.decodedOutput = {}
     def getInputs(self, keys):
         self.keys = keys
         
@@ -15,15 +16,16 @@ class Bob:
     def decodeCircuit(self,outputs):
         self.decoded_circuit = []
         for gate in self.circuit:
-            found = self.decodeGate(gate)
-            if(found == b'0'):
+            res = self.decodeGate(gate)
+            if(res == b'0'):
                 self.decoded_circuit.append({'id':gate['id'],'output':gate['outputs'][0]})
-            elif(found == b'1'):
+            elif(res == b'1'):
                 self.decoded_circuit.append({'id':gate['id'],'output':gate['outputs'][1]})
+        #encode and return output values of the circuit
         decodedOutputs = {}
         for gate in self.decoded_circuit:
             if(gate['id'] in outputs):
-                decodedOutputs.update({gate['id']:gate['output']})
+                decodedOutputs.update({gate['id']:self.fernet.encrypt(self.decodedOutput.get(gate['id']))})
         return decodedOutputs
 
     def decodeGate(self, gate):
@@ -47,6 +49,7 @@ class Bob:
         for cyphertext in gate['cyphertext']:
             try:
                 res = Fernet(keys[0]).decrypt(Fernet(keys[1]).decrypt(cyphertext))
+                self.decodedOutput.update({gate['id']:res})                    
                 if(res == b'0'):
                     self.output.update({gate['id']:gate['outputs'][0]})
                     return res

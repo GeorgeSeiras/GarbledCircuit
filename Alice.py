@@ -1,13 +1,25 @@
 from Yao import GarbleGate
 import random
+from cryptography.fernet import Fernet
 class Alice:
 
+    def __init__(self,publicKey):
+        self.fernet = Fernet(publicKey)
+
+    def decodeOutput(self,decodedCircuit):
+        decodedOutput = {}
+        for key,value in decodedCircuit.items():
+            # print(self.fernet.decrypt(value))
+            decodedOutput.update({key:self.fernet.decrypt(value)})
+        return decodedOutput
+
     #given a circuit, creates and returnes its garbled version
-    def garbleCirtcuit(self,circuit):
+    def garbleCircuit(self,circuit):
         garbled_circuit = []
         yao = GarbleGate()
         for gate in circuit['gates']:
             garbled_gate = yao.run(garbled_circuit, gate)
+            print(len(garbled_gate['keys']))
             if(garbled_gate == None):
                 return None
             garbled_circuit.append(garbled_gate)
@@ -25,12 +37,18 @@ class Alice:
                     index = gate['inputs'].index(wire)
                     if(index == 0):
                         if(inputs[index] == 0):
-                          inputWireKeys.update({wire:gate['keys'][0]})
+                            # print('Selecting key 0')
+                            inputWireKeys.update({wire:gate['keys'][0]})
                         elif(inputs[index] == 1):
-                         inputWireKeys.update({wire:gate['keys'][1]})
+                            # print('Selecting key 1')
+                            inputWireKeys.update({wire:gate['keys'][1]})
                     elif(index == 1):
                         if(inputs[index] == 0):
-                          inputWireKeys.update({wire:gate['keys'][2]})
+                            # print('Selecting key 3')
+                            inputWireKeys.update({wire:gate['keys'][2]})
                         elif(inputs[index] == 1):
-                         inputWireKeys.update({wire:gate['keys'][3]})
+                            # print('Selecting key 3')
+                            inputWireKeys.update({wire:gate['keys'][3]})
+                    # print(gate['keys'])
         return inputWireKeys
+
