@@ -72,10 +72,6 @@ class GarbleGate:
             else:
                 keys = keys + res
             self.wires.update({gate['input'][1]:[keys[2],keys[3]]})   
-        #if the gates have 1 wire acting as 2 inputs, the first 2 keys are the same as the last 2                 
-        # else:
-        #     keys.append(keys[0])
-        #     keys.append(keys[1])
         self.keys = keys
 
     #Generates two keys that mark the output of a gate
