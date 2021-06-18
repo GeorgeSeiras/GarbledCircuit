@@ -1,8 +1,8 @@
-from itertools import product
 from Alice import Alice
 import json
 from Bob import Bob
 from cryptography.fernet import Fernet
+import copy
 
 #this key will be used to encrypt and decrypt the circuit output
 publicKey = Fernet.generate_key()
@@ -19,9 +19,12 @@ garbled_circuit = alice.garbleCircuit(circuit)
 if(garbled_circuit == None):
     print('An error has occured, check if the circuit.json has the correct values')
 
-#send bob the garbled circuit
-bob.getGarbledCircuit(garbled_circuit)
+garbled_circuit_without_keys = copy.deepcopy(garbled_circuit)
+for gate in garbled_circuit_without_keys:
+    gate.pop('keys',None)
 
+#send bob the garbled circuit
+bob.getGarbledCircuit(garbled_circuit_without_keys)
 
 #Generate inputs for the circuit
 inputs = alice.generateInputs()
